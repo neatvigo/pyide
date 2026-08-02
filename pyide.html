@@ -9,8 +9,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="pyIDE">
-<link rel="apple-touch-icon" id="appleIcon">
-<link rel="manifest" id="manifestLink">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -508,66 +509,4 @@ for n in ["world", "pyIDE"]:
         if (name === 'main.py') continue;
         pyodide.FS.writeFile(workdir + '/' + name, files[name]);
       }
-      pyodide.runPython("import sys\nif '" + workdir + "' not in sys.path:\n    sys.path.insert(0, '" + workdir + "')");
-      await pyodide.runPythonAsync(files['main.py']);
-      const ms = Math.round(performance.now() - t0);
-      appendMeta('finished in ' + ms + 'ms');
-      flagOutputTab(false);
-    } catch (err){
-      appendOutput(String(err.message || err), 'stderr');
-      flagOutputTab(true);
-    } finally {
-      runBtn.disabled = false;
-      runSpinner.classList.remove('on');
-      runLabel.textContent = 'Run';
-      setStatus('ready', 'ready');
-    }
-  }
-
-  runBtn.addEventListener('click', runCode);
-  document.getElementById('clearBtn').addEventListener('click', () => {
-    outputEl.innerHTML = '<div class="placeholder">Run your code to see output here.</div>';
-    outBadge.style.display = 'none';
-  });
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    if (confirm('Reset the whole workspace to a single starter file? This deletes any other files you added.')){
-      files = { 'main.py': STARTER };
-      fileOrder = ['main.py'];
-      activeFile = 'main.py';
-      codeEl.value = STARTER;
-      syncGutter();
-      renderFilebar();
-      scheduleSave();
-    }
-  });
-
-  // ---------- Standalone / installable app setup ----------
-  function setupManifest(){
-    const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512"><rect width="512" height="512" rx="96" fill="%230f1117"/><text x="50%" y="58%" font-family="Space Grotesk,sans-serif" font-size="200" font-weight="700" fill="%23f2b134" text-anchor="middle">py</text></svg>';
-    const iconUrl = 'data:image/svg+xml,' + iconSvg;
-    document.getElementById('appleIcon').href = iconUrl;
-    const manifest = {
-      name: 'pyIDE — pocket python',
-      short_name: 'pyIDE',
-      start_url: '.',
-      display: 'standalone',
-      background_color: '#0f1117',
-      theme_color: '#0f1117',
-      icons: [{ src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any' }]
-    };
-    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-    document.getElementById('manifestLink').href = URL.createObjectURL(blob);
-  }
-
-  // ---------- Init ----------
-  (async function init(){
-    setupManifest();
-    await loadSaved();
-    codeEl.value = files[activeFile];
-    syncGutter();
-    renderFilebar();
-    boot();
-  })();
-</script>
-</body>
-</html>
+      pyodide.runPython("import sys\nif '" + workdir + "' not
